@@ -1,0 +1,29 @@
+name: Docker Publish
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and publish auth-api
+        uses: docker/build-push-action@v2
+        with:
+          context: ./auth-api
+          push: true
+          tags: eddie0228/kube-dep-auth:latest
+      - name: Build and publish users-api
+        uses: docker/build-push-action@v2
+        with:
+          context: ./users-api
+          push: true
+          tags: eddie0228/kube-dep-users:latest
