@@ -27,3 +27,13 @@ jobs:
           context: ./users-api
           push: true
           tags: eddie0228/kube-dep-users:latest
+      - name: Install and configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+      - name: Authenticate with EKS cluster
+        run: aws eks --region ap-east-1 update-kubeconfig --name kub-dep-demo
+      - name: Deploy to EKS
+        run: kubectl apply -f eks/auth.yaml -f eks/users.yaml
